@@ -13,14 +13,30 @@ export class EventsService {
     });
   }
 
-  findAll() {
-    return this.prismaService.events.findMany();
+  async findAll(page: number = 1, limit: number = 5) {
+    const skip = (page - 1) * limit;
+    const [events, totalCount] = await this.prismaService.$transaction([
+      this.prismaService.events.findMany({
+        skip,
+        take: +limit,
+      }),
+      this.prismaService.events.count(),
+    ]);
+
+    return {
+      data: events,
+      totalCount,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+    };
   }
 
-  findOne(id: number) {
-    return this.prismaService.events.findUnique({
-        where: {event_id:id}
+  async findOne(id: number) {
+    const event = await this.prismaService.events.findUnique({
+      where: { event_id: id },
     });
+
+    return {data: event};
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {

@@ -1,9 +1,13 @@
-import {Global, Injectable, OnModuleInit} from '@nestjs/common';
+import {Global, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {PrismaClient, Prisma} from "@prisma/client";
 
 @Global()
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+    private readonly logger = new Logger(PrismaService.name);
+    private readonly maxRetries = 5;
+    private readonly retryDelay = 3000; // in milliseconds
+
     constructor() {
         super({
             // @ts-ignore
@@ -14,12 +18,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async onModuleInit() {
+        await this.connectWithRetry();
+    }
+
+    async init() {
         await this.$connect();
         this.$use(async (params, next) => {
-            //all modules names
-            const modelNames = Prisma.dmmf.datamodel.models.map((model) => model.name);
-            const modelsWithSoftDelete = modelNames; // Replace with your model names
-
+            const modelsWithSoftDelete = Prisma.dmmf.datamodel.models.map((model) => model.name);
             if (modelsWithSoftDelete.includes(params.model)) {
                 params.args = params.args || {}
                 params.args.where = params.args.where || {};
@@ -55,7 +60,21 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
-    async onModuleDestroy() {
-        await this.$disconnect();
+    private async connectWithRetry(retries = 0): Promise<void> {
+        try {
+            await this.init();
+            this.logger.log('Successfully connected to the database.');
+        } catch (error) {
+            this.logger.error(`Database connection failed (attempt ${retries + 1}): ${error.message}`);
+            if (retries < this.maxRetries) {
+                this.logger.log(`Retrying to connect in ${this.retryDelay / 1000} seconds...`);
+                await new Promise((resolve) => setTimeout(resolve, this.retryDelay));
+                await this.connectWithRetry(retries + 1);
+            } else {
+                this.logger.error('Max retries reached. Could not connect to the database.');
+                process.exit(1); // Exit the application
+            }
+        }
     }
+
 }
