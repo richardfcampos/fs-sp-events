@@ -1,21 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {AuthContextType, UserData} from "@/interfaces/auth/AuthInterface";
 
-interface AuthContextType {
-    isAuthenticated: boolean;
-    login: (userData: UserData) => void;
-    logout: () => void;
-    userData: UserData | null;
-}
-interface User {
-    email: string;
-    id: number;
-    name: string;
-    role: 'Admin' | 'User';
-}
-interface UserData {
-    token: string;
-    user: User;
-}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -25,10 +10,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const storedAuthState = localStorage.getItem('isAuthenticated');
-        const userStorage = localStorage.getItem('userData')
+
+        // @ts-ignore
+        const userStorage: UserData = JSON.parse(localStorage.getItem('userData'))
         if (storedAuthState === 'true') {
             setIsAuthenticated(true);
-            setUserData(JSON.parse(userStorage))
+            setUserData(userStorage)
         }
 
     }, []);

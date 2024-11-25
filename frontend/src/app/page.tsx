@@ -5,19 +5,14 @@ import { usePagination } from "@/hooks/usePagination"
 import { useModal } from "@/hooks/useModal"
 import { useApi } from "@/hooks/useApi"
 import { useQuery } from "@tanstack/react-query";
-import { ResponseInterface } from "@/interfaces/ResponseInterface";
 import Modal from "@/components/modal/modal";
 import { EventInterface } from "@/interfaces/EventInterface";
-import EventList from "@/components/EventList/eventList";
+import {EventResponseInterface as EventResponse} from "@/interfaces/page/EventResponseInterface";
+import EventList from "@/components/eventList/eventList";
 import LoginModal from "@/components/loginModal/loginModal";
 import {useAuth} from "@/context/authContext";
 
-interface EventResponse extends ResponseInterface {
-    data: EventInterface[];
-    totalCount: number;
-    currentPage: number;
-    totalPages: number;
-}
+
 
 export default function Home() {
     const [betAmount, setBetAmount] = useState('');
@@ -65,7 +60,6 @@ export default function Home() {
             setBetAmount('')
         }
     }, [modalBet.isOpen, userData])
-    console.log('jere', userData)
 
     return (
         <div className="min-h-screen bg-gray-100 py-8">
