@@ -1,7 +1,23 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, Query, UsePipes, ValidationPipe} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  UseGuards
+} from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import {JwtAuthGuard} from "../auth/guards/jwt.guard";
+import {AclGuard} from "../acl/guards/acl.guard";
+import {UserRoles} from "../acl/decorators/roles.decorator";
+import {UserRole} from "../acl/enums/user.role.enum";
 
 @Controller('events')
 export class EventsController {
@@ -10,6 +26,8 @@ export class EventsController {
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
+  @UseGuards(JwtAuthGuard, AclGuard)
+  @UserRoles(UserRole.ADMIN)
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
   }
