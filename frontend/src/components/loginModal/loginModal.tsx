@@ -8,7 +8,7 @@ interface LoginModalProps {
     onClose: () => void;
 }
 
-export default function LoginModal({ isOpen, onClose }: React.FC<LoginModalProps>)  {
+export default function LoginModal({ isOpen, onClose }: LoginModalProps)  {
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

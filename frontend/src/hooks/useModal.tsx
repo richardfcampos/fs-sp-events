@@ -17,7 +17,7 @@ export const useModal = <T,>(isOpen?: boolean, data?: T) => {
     setModal({ isOpen: true, data })
   }
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setModal(initialModal)
   }
 
