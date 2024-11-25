@@ -19,7 +19,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps)  {
 
     const authenticateUser = async (username:string, password:string): Promise<UserData|undefined> => {
         try {
-            return  await post<UserData|undefined>(`http://localhost:3001/api/auth/login`, {username, password})
+            return  await post<UserData|undefined>(`${process.env.NEXT_PUBLIC_API_HOST}api/auth/login`, {username, password})
         } catch (error) {
             console.log(error)
             setInvalidCredentials(true)

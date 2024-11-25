@@ -22,6 +22,7 @@ export default function Home() {
     const { get } = useApi()
     const { isAuthenticated, userData } = useAuth();
 
+
     const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (/^\d*\.?\d*$/.test(value)) {
@@ -38,7 +39,7 @@ export default function Home() {
     })
 
     const fetchEvents = async (): Promise<EventInterface[]> => {
-        const { data, totalPages } = await get<EventResponse>(`http://localhost:3001/api/events?page=${pagination.page}&limit=${pagination.perPage}`)
+        const { data, totalPages } = await get<EventResponse>(`${process.env.NEXT_PUBLIC_API_HOST}api/events?page=${pagination.page}&limit=${pagination.perPage}`)
 
         pagination.setTotalPages(totalPages)
 
