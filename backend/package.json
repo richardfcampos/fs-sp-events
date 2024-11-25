@@ -21,6 +21,7 @@
     "prisma:deploy": "npx prisma migrate deploy",
     "prisma:seed": "ts-node --transpile-only prisma/seed.ts",
     "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
     "db:seed": "yarn prisma:seed",
     "db:init": "npx prisma generate && yarn prisma:deploy && yarn prisma:seed"
   },
