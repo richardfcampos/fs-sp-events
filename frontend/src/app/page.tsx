@@ -35,11 +35,11 @@ export default function Home() {
         queryFn: () => fetchEvents(),
         retry: 1,
         refetchInterval: 500,
-        staleTime: 60 * 1000,
+        staleTime: 60 * 10000,
     })
 
     const fetchEvents = async (): Promise<EventInterface[]> => {
-        const { data, totalPages } = await get<EventResponse>(`http://localhost:3001/events?page=${pagination.page}&limit=${pagination.perPage}`)
+        const { data, totalPages } = await get<EventResponse>(`http://localhost:3001/api/events?page=${pagination.page}&limit=${pagination.perPage}`)
 
         pagination.setTotalPages(totalPages)
 

@@ -14,6 +14,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Users {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String        @db.VarChar(50)
+  password    String
+  role        UserRole      @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  deletedAt   DateTime?
+}
+
 model Events {
   event_id         Int           @id @default(autoincrement())
   event_name       String        @db.VarChar()

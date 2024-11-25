@@ -13,6 +13,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             // @ts-ignore
             omit: {
                 events: {createdAt: true, updatedAt: true, deletedAt: true},
+                users: {createdAt: true, updatedAt: true, deletedAt: true},
             },
         });
     }

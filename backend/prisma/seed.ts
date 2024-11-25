@@ -1,4 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from "bcrypt";
+import * as dotenv from "dotenv"
+
+dotenv.config()
 
 const prisma = new PrismaClient();
 
@@ -6,7 +10,37 @@ interface Event {
     event_name: string;
     odds: number;
 }
+
+enum UserRole {
+    ADMIN = 'ADMIN',
+    USER = 'USER'
+}
+
+interface User {
+    email: string;
+    name: string;
+    password: string;
+    role:UserRole
+}
+
 async function main(): Promise<void> {
+    const saltOrRounds = process.env.SALT_OR_ROUNDS;
+    const password1 = await bcrypt.hash(
+        "123456",
+        +saltOrRounds,
+    );
+    const password2 = await bcrypt.hash(
+        "654321",
+        +saltOrRounds,
+    );
+
+    console.log('aaaaaaaa', password1)
+
+    const users: User[] = [
+        { email: "user1@user.com", name: "User 1", password: password1, role: UserRole.ADMIN },
+        { email: "user2@user.com", name: "User 2", password: password2, role: UserRole.USER },
+        ];
+
     const events: Event[]    = [
         { event_name: "Basketball: Houston Rockets vs. San Antonio Spurs", odds: 1.75 },
         { event_name: "Basketball: Los Angeles Lakers vs. Boston Celtics", odds: 2.10 },
@@ -34,6 +68,10 @@ async function main(): Promise<void> {
         { event_name: "Boxing: Canelo Alvarez vs. Gennady Golovkin", odds: 1.90 },
         { event_name: "MMA: Conor McGregor vs. Khabib Nurmagomedov", odds: 2.00 }
     ];
+
+    for (const user of users) {
+        await prisma.users.create({data: user})
+    }
 
     for (const event of events) {
         await prisma.events.create({ data: event });
