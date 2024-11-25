@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/modal/modal';
 import { useAuth } from '@/context/authContext';
 import { useApi } from "@/hooks/useApi"
+import { UserData } from "@/interfaces/auth/AuthInterface"
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -16,9 +17,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps)  {
     const { post } = useApi()
 
 
-    const authenticateUser = async (username:string, password:string): Promise<any> => {
+    const authenticateUser = async (username:string, password:string): Promise<UserData|undefined> => {
         try {
-            return  await post<any>(`http://localhost:3001/api/auth/login`, {username, password})
+            return  await post<UserData|undefined>(`http://localhost:3001/api/auth/login`, {username, password})
         } catch (error) {
             console.log(error)
             setInvalidCredentials(true)

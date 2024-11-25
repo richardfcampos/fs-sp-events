@@ -11,8 +11,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const storedAuthState = localStorage.getItem('isAuthenticated');
 
-        // @ts-ignore
-        const userStorage: UserData = JSON.parse(localStorage.getItem('userData'))
+        const userStorage: UserData|null = localStorage.getItem('userData')
+            ? JSON.parse(localStorage.getItem('userData') ?? '')
+            : null
         if (storedAuthState === 'true') {
             setIsAuthenticated(true);
             setUserData(userStorage)
