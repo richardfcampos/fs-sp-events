@@ -27,8 +27,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         this.$use(async (params, next) => {
             const modelsWithSoftDelete = Prisma.dmmf.datamodel.models.map((model) => model.name);
             if (modelsWithSoftDelete.includes(params.model)) {
-                params.args = params.args || {}
-                params.args.where = params.args.where || {};
+                if (params.action !== 'create'){
+                    params.args = params.args || {}
+                    params.args.where = params.args.where || {};
+                }
 
                 if (params.action === 'delete') {
                     // Change 'delete' to 'update'
