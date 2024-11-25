@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber, IsString} from 'class-validator';
+import { IsNotEmpty, IsString, IsDecimal } from 'class-validator';
 
 export class CreateEventDto {
 
@@ -7,6 +7,6 @@ export class CreateEventDto {
     event_name: string;
 
     @IsNotEmpty()
-    @IsNumber({ maxDecimalPlaces: 2 })
+    @IsDecimal({ decimal_digits: '0,2' })
     odds: number;
 }
