@@ -20,7 +20,7 @@ export default function Home() {
     const modalLogin = useModal()
     const pagination = usePagination(5)
     const { get } = useApi()
-    const { isAuthenticated, userData } = useAuth();
+    const { isAuthenticated, userData, logout } = useAuth();
 
 
     const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,11 +66,17 @@ export default function Home() {
         <div className="min-h-screen bg-gray-100 py-8">
 
             <div className="container mx-auto px-4">
-                {
-                    isAuthenticated && <div className="text-black">
-                    User: {userData?.user.name}
-                </div>
-                }
+                {isAuthenticated && (
+                    <div className="flex justify-end items-center mb-4">
+                        <span className="text-black mr-2">User: {userData?.user.name}</span>
+                        <button
+                            onClick={logout}
+                            className="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                )}
 
                 <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
                     Bets Sports Events
