@@ -9,17 +9,18 @@ interface EventListProps {
     handlePageChange: (page: number) => void;
     eventsPerPage: number;
     handleLimitChange: (limit: number) => void;
+    rowsPerPageOption: number[];
 }
-export default function EventList({events, submit, currentPage, totalPages, handlePageChange,eventsPerPage,handleLimitChange }: EventListProps) {
+export default function EventList({events, submit, currentPage, totalPages, handlePageChange,eventsPerPage,handleLimitChange, rowsPerPageOption }: EventListProps) {
     return (
         <div>
             <div className="mb-6 flex justify-between items-center">
                 <select
-                    className="ml-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="ml-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     value={eventsPerPage}
                     onChange={(event) => handleLimitChange(+event.target.value)}
                 >
-                    {[5, 10, 15, 20, 25].map((limit) => (
+                    {rowsPerPageOption.map((limit) => (
                         <option key={limit} value={limit}>
                             {limit} per page
                         </option>
