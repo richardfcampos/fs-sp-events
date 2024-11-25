@@ -20,7 +20,7 @@ export class AuthService {
     }
     if (await bcrypt.compare(password, findUser.password)) {
       const { password, ...user } = findUser;
-      return this.jwtService.sign(user);
+      return {token: this.jwtService.sign(user), user};
     }
     return null;
   }

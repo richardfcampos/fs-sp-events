@@ -2,19 +2,19 @@
 import { useMemo, useState } from 'react'
 
 export type ModalDataType<T> = {
-  open: boolean,
+  isOpen: boolean,
   data?: T
 }
 
-export const useModal = <T,>(open?: boolean, data?: T) => {
+export const useModal = <T,>(isOpen?: boolean, data?: T) => {
   // ** Hooks
-  const initialModal = useMemo(() => ({ open: open ?? false, data }), [])
+  const initialModal = useMemo(() => ({ isOpen: isOpen ?? false, data }), [])
 
   // ** States
   const [modal, setModal] = useState<ModalDataType<T>>(initialModal)
 
   const handleOpen = (data?: T) => {
-    setModal({ open: true, data })
+    setModal({ isOpen: true, data })
   }
 
   const handleClose = () => {
@@ -22,7 +22,7 @@ export const useModal = <T,>(open?: boolean, data?: T) => {
   }
 
   return {
-    open: modal.open,
+    isOpen: modal.isOpen,
     data: modal.data,
     handleOpen,
     handleClose

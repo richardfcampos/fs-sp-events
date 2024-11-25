@@ -9,6 +9,8 @@ import { ResponseInterface } from "@/interfaces/ResponseInterface";
 import Modal from "@/components/modal/modal";
 import { EventInterface } from "@/interfaces/EventInterface";
 import EventList from "@/components/EventList/eventList";
+import LoginModal from "@/components/loginModal/loginModal";
+import {useAuth} from "@/context/authContext";
 
 interface EventResponse extends ResponseInterface {
     data: EventInterface[];
@@ -20,8 +22,10 @@ interface EventResponse extends ResponseInterface {
 export default function Home() {
     const [betAmount, setBetAmount] = useState('');
     const modalBet = useModal<EventInterface>()
+    const modalLogin = useModal()
     const pagination = usePagination(5)
     const { get } = useApi()
+    const { isAuthenticated, userData } = useAuth();
 
     const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -34,7 +38,7 @@ export default function Home() {
         queryKey: ['events', `page:${pagination.page}`, `perPage:${pagination.perPage}`],
         queryFn: () => fetchEvents(),
         retry: 1,
-        refetchInterval: 500,
+        refetchInterval: 5 * 60 * 1000,
         staleTime: 60 * 10000,
     })
 
@@ -58,14 +62,22 @@ export default function Home() {
     }
 
     useEffect(() => {
-        if (!modalBet.open) {
+        if (!modalBet.isOpen) {
             setBetAmount('')
         }
-    }, [modalBet.open])
+    }, [modalBet.isOpen, userData])
+    console.log('jere', userData)
 
     return (
         <div className="min-h-screen bg-gray-100 py-8">
-            <div className="container mx-auto px-4">w
+
+            <div className="container mx-auto px-4">
+                {
+                    isAuthenticated && <div className="text-black">
+                    User: {userData?.user.name}
+                </div>
+                }
+
                 <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
                     Bets Sports Events
                 </h1>
@@ -73,7 +85,13 @@ export default function Home() {
                 {query.data && query.data.length > 0 && (
                     <EventList
                         events={query.data ?? []}
-                        submit={modalBet.handleOpen}
+                        submit={(event) => {
+                            if (isAuthenticated) {
+                                modalBet.handleOpen(event)
+                            } else {
+                                modalLogin.handleOpen()
+                            }
+                        }}
                         currentPage={pagination.page}
                         totalPages={pagination.totalPages}
                         handlePageChange={pagination.setPage}
@@ -83,7 +101,7 @@ export default function Home() {
                     />
                 )}
 
-                <Modal isOpen={modalBet.open} onClose={modalBet.handleClose}>
+                <Modal isOpen={modalBet.isOpen} onClose={modalBet.handleClose}>
                     <h2 className="text-2xl font-semibold mb-4 text-black">
                         Place Your Bet on {modalBet.data?.event_name}
                     </h2>
@@ -101,6 +119,7 @@ export default function Home() {
                         Submit Bet
                     </button>
                 </Modal>
+                <LoginModal isOpen={modalLogin.isOpen} onClose={modalLogin.handleClose}/>
             </div>
         </div>
     );

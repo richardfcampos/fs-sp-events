@@ -9,7 +9,7 @@ export const useApi = () => {
     return (await response.json()) as T;
   };
 
-  const post = async <T,>(url: string, data = undefined) => {
+  const post = async <T,>(url: string, data: Record<string, unknown>) => {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
