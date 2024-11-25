@@ -54,7 +54,6 @@ export default function Home() {
         event.preventDefault(); // Prevents the default form submission behavior
         alert(`The name you entered was: ${name}`);
         modalBet.handleClose()
-        // You can add additional logic here, such as sending the data to a server
     };
 
     if (query.error) {
