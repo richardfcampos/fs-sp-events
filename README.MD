@@ -20,7 +20,7 @@ run `yarn db:up`
 
 when the db is ready, you can set it up, migrating the tables and seeding the db
 
-run `yarn db:seed`
+run `yarn db:init`
 
 Now everything is setup, you can simply run the backend:
 
